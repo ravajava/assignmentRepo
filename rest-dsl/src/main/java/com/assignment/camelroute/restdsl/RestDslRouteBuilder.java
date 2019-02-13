@@ -1,6 +1,7 @@
 package com.assignment.camelroute.restdsl;
 
 import com.assignment.camelroute.restdsl.Services.ProcessRecords;
+import com.assignment.camelroute.restdsl.Services.ProcessRemoveEvents;
 import com.assignment.camelroute.restdsl.Services.StringAggregationStrategy;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
@@ -36,8 +37,11 @@ public class RestDslRouteBuilder extends RouteBuilder {
         from("direct:CSVconvert")
                 .log("Started JSON to CSV conversion route...")
                 .split().jsonpathWriteAsString("$.records")
+                //this isn't necessary, but it's being done in case it is wanted regardless
+                .process(new ProcessRemoveEvents())
                 .setHeader(Exchange.FILE_NAME, new SimpleExpression("${exchangeId}.csv"))
                 .process(new ProcessRecords())
+                //json node delete
                 .aggregate (constant(true), new StringAggregationStrategy())
                 .completionSize(10)
                 .completionInterval(15000)

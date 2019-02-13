@@ -22,7 +22,7 @@ public class ProcessRecords implements Processor {
         //get string from exchange
         String myString = exchange.getIn().getBody(String.class);
 
-        //convert string from exchange a read context for easily fetching records
+        //convert string from exchange to a read context for easily fetching records
         ReadContext ctx = JsonPath.parse(myString);
 
        //Convert records into CSV
@@ -30,13 +30,13 @@ public class ProcessRecords implements Processor {
         StringBuffer sb = new StringBuffer();
         sb.append((String)ctx.read("$..transId").toString()
                 .replaceAll("\\]", "")
-                .replaceAll("\\[", "") + ", ");
+                .replaceAll("\\[", "") + ",");
         sb.append((String)ctx.read("$..transTms").toString()
                 .replaceAll("\\]", "")
-                .replaceAll("\\[", "") + ", ");
+                .replaceAll("\\[", "") + ",");
         sb.append((String)ctx.read("$..rcNum").toString()
                 .replaceAll("\\]", "")
-                .replaceAll("\\[", "") + ", ");
+                .replaceAll("\\[", "") + ",");
         sb.append((String)ctx.read("$..clientId").toString()
                 .replaceAll("\\]", "")
                 .replaceAll("\\[", ""));

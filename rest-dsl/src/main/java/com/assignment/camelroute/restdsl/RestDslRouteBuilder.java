@@ -44,7 +44,7 @@ public class RestDslRouteBuilder extends RouteBuilder {
                 //json node delete
                 .aggregate (constant(true), new StringAggregationStrategy())
                 .completionSize(10)
-                .completionInterval(15000)
+                .completionInterval(60000)
                 .log("Writing to file...")
                 //Writes result to relative data/output folder
                 .to("file:data/output");

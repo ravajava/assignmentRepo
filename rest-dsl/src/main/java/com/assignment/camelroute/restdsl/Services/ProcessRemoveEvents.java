@@ -2,10 +2,7 @@ package com.assignment.camelroute.restdsl.Services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.ReadContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.slf4j.Logger;
@@ -26,11 +23,14 @@ public class ProcessRemoveEvents implements Processor {
         JsonNode actualObj = mapper.readTree(myString);
         JsonNode copiedObj = actualObj.deepCopy();
 
+        //loops through JSON object until it finds event node
+        //count of deleted event nodes is kept
         int count = 0;
         for(JsonNode eventNode : copiedObj.findParents("event"))
         {
             if (eventNode instanceof ObjectNode)
             {
+                //if event node is found, delete
                 recordsLog.info("found json parent of event <" + eventNode.toString() + ">");
                 ObjectNode parent = (ObjectNode) eventNode;
                 JsonNode deletedNode = parent.remove("event");

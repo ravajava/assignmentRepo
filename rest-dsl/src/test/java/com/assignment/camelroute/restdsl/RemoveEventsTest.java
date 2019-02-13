@@ -10,13 +10,17 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.InputStream;
 import java.util.Map;
+
+/*
+ProcessRemoveEvents unit test
+ */
 
 public class RemoveEventsTest extends CamelTestSupport {
     Logger testsLog = LoggerFactory.getLogger(MatchingMessageTest.class);
 
+    // Simple route that tests the ProcessRemoveEvents class
     @Override
     protected RouteBuilder createRouteBuilder() {
         return new RouteBuilder() {
@@ -34,15 +38,17 @@ public class RemoveEventsTest extends CamelTestSupport {
     public void testRemoveEvent() throws Exception {
         ObjectMapper objectmapper = new ObjectMapper();
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
+
+        // Gets the jsson with events to be cleared
         InputStream stream = loader.getResourceAsStream("Test_Payloads/event-test-payload.json");
         JSONObject testRemove = new JSONObject(objectmapper.readValue(stream, Map.class));
 
-
+        //Gets the expected result
         InputStream processedStream = loader.getResourceAsStream("Test_Payloads/event-test-result.json");
-        //JSONObject processedRemove = new JSONObject(objectmapper.readValue(processedStream, Map.class));
         String processedRemove = IOUtils.toString(processedStream, "UTF-8");
 
         MockEndpoint resultEndpoint = getMockEndpoint("mock:result");
+        //expects that their will only be one file and that the body of the result will match expected result
         resultEndpoint.expectedMessageCount(1);
         resultEndpoint.expectedBodiesReceived(processedRemove.replaceAll("[^\\p{Graph}\\n\\r\\t ]", ""));
         template.sendBody("direct:start", testRemove);
